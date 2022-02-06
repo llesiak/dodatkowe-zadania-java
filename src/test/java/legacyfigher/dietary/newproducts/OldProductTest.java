@@ -32,6 +32,13 @@ class OldProductTest {
         );
     }
 
+    static Stream<BigDecimal> provideInvalidPrices() {
+        return Stream.of(
+                null,
+                new BigDecimal(-1)
+        );
+    }
+
     @Test
     void shouldDecrementCounter() {
         //given
@@ -103,16 +110,29 @@ class OldProductTest {
     }
 
     @Test
-    void shouldNotChangePriceToInvalidPrice() {
+    void shouldNotChangePriceIfProductCounterIsZero() {
+        //given
+        OldProduct product = new OldProduct(ONE, "desc", "long_desc", 0);
+        BigDecimal newPrice = TEN;
+
+        //when
+        product.changePriceTo(newPrice);
+
+        //then
+        Assertions.assertEquals(ONE, product.price);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidPrices")
+    void shouldNotChangePriceToInvalidPrice(BigDecimal newPrice) {
         //given
         OldProduct product = new OldProduct(ONE, "desc", "long_desc", 1);
-        BigDecimal newPrice = null;
 
         //expect
         Assertions.assertThrows(IllegalStateException.class, () -> product.changePriceTo(newPrice));
     }
 
-    //    @ParameterizedTest
+    @ParameterizedTest
     @MethodSource("provideInvalidProductsWithMessages")
     void shouldNotChangePriceOfInvalidProduct(OldProduct product, String message) {
         //when
@@ -120,18 +140,6 @@ class OldProductTest {
                 () -> product.changePriceTo(TEN));
         //then
         Assertions.assertEquals(message, exception.getMessage());
-    }
-
-    /**
-     * looks like BUG in changePriceTo, use shouldNotChangePriceOfInvalidProduct(OldProduct, String) test when fixed
-     */
-    @Test
-    void shouldNotChangePriceOfInvalidProduct() {
-        //given
-        OldProduct product = new OldProduct(ONE, "desc", "long_desc", null);
-
-        //expect
-        Assertions.assertThrows(IllegalStateException.class, () -> product.changePriceTo(TEN));
     }
 
     @Test

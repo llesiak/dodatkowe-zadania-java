@@ -1,9 +1,9 @@
 Analiza:
-Brak hermetyzacji pól.
-Brak trzymania się zasad code style, pola, konstruktor, metody są nie po kolei, słaba czytelność.
-Pole desc i longDesc są silnie ze sobą powiązane, wnioske na podstawie użycia w metodach. Można to zareprezentować tworząc nową klase. Słaba czytelność.
-Walidacja ceny nie jest wyciągnięta do osobnej metody, kod jest zduplikowany w metodach decrementCounter i incrementCounter.
-decrementCounter zmienia pole przed zwalidowaniem czy wynik bedzie akceptowalny. BUG
+- Brak hermetyzacji pól. (Brak informacji o użyciu klasy uniemożliwia hermetyzacje jej pól, bez popsucia kodu jej klientów)
++ Brak trzymania się zasad code style, pola, konstruktor, metody są nie po kolei, słaba czytelność.
+- Pole desc i longDesc są silnie ze sobą powiązane, wniosek na podstawie użycia w metodach. Można to zareprezentować tworząc nową klase. Słaba czytelność. (Brak informacji o użyciu pól przez klienta, nie rozumiem nie dotykam)
++ Walidacja ceny nie jest wyciągnięta do osobnej metody, kod jest zduplikowany w metodach decrementCounter i incrementCounter.
++ decrementCounter zmienia pole przed zwalidowaniem czy wynik bedzie akceptowalny. BUG
 
 Argumentacja:
 Przy znaczącej częstotliwości zmian w OldProduct poprawienie czytelności kodu, jego "Reformat" wydaje się tanim rozwiązaniem a oszczedzający wiele czasu.
@@ -11,10 +11,15 @@ Wyciągnięcie walidacji zabezpieczy nas przed potencjalnym dodaniem błędu pod
 Sam OldProduct ma jasny, łatwo testowalny kontrakt, obserowalne zachowanie, co przy małym koszcie pozwoli na bezpieczne zmienianie jego szczegółów implementacyjnych.
 
 Testy, komentarz:
-- testy jednostkowe są wystarczające do sprawdzenia obserwowalnych zachowań.
+Testy jednostkowe są wystarczające do sprawdzenia obserwowalnych zachowań.
 
 Analiza podczas tworzenia testów:
-- Cena produktu może zostać ustawiona na negatywną. BUG
-- brakuje implementacji toString
-- nazwa OldProduct jest malo mówiąca
-- changePriceTo ma tylko czesciowe sprawdzenie czy zmieniany produkt jest poprawny (brak ujemny counter czy niepoprawnej price)
++ Cena produktu może zostać ustawiona na negatywną. BUG
++ brakuje implementacji toString
+- nazwa OldProduct jest malo mówiąca (Brak szerszej perspektywy uniemożliwia nadanie więcej mówiącej nazwy).
++ changePriceTo ma tylko czesciowe sprawdzenie czy zmieniany produkt jest poprawny (brak ujemny counter czy niepoprawnej price)
+
+Zaobserwowanie skuteczności zmian:
+* szybkość wprowadzania przyszlych zmian w klasie OldProduct
+* ilość zmienionych lini przy wprowadzaniu zmian w klasie OldProduct
+* ilość zgłoszonych BUGów od klientów dotyczących klasy OldProduct
